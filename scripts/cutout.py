@@ -25,7 +25,7 @@ ANSI = re.compile(r'\x1b\[[0-9;?]*[A-Za-z]')
 def frames(f):
     out = subprocess.run([skillenv.tool('ffprobe'), '-v', 'error', '-count_frames', '-select_streams', 'v:0',
                           '-show_entries', 'stream=nb_read_frames', '-of', 'csv=p=0', f], **skillenv.TEXT).stdout
-    return out.strip().split(',')[0]
+    return out.strip().splitlines()[0].split(',')[0] if out.strip() else ''
 
 
 def split_progress(buf):

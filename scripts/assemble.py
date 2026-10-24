@@ -23,7 +23,8 @@ FF, FP = skillenv.tool('ffmpeg'), skillenv.tool('ffprobe')
 
 def size(f):
     w, h = subprocess.run([FP, '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', f],
-                          **skillenv.TEXT).stdout.strip().split(',')[:2]
+                          **skillenv.TEXT).stdout.strip().splitlines()[0].split(',')[:2]
+    # First line only: files with a program table (DJI Mimo, some cameras) repeat each stream entry.
     return int(w), int(h)
 
 
@@ -38,7 +39,7 @@ def crop(z, cx, cy, sw, sh):
 
 def frames(f):
     return int(subprocess.run([FP, '-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames',
-                               '-of', 'csv=p=0', f], **skillenv.TEXT).stdout.strip().split(',')[0])
+                               '-of', 'csv=p=0', f], **skillenv.TEXT).stdout.strip().splitlines()[0].split(',')[0])
 
 
 def main():
